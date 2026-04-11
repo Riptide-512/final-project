@@ -18,6 +18,53 @@
       <h1>Our Reviews</h1>
       <p class="intro-text">See what our happy clients have to say about their wedding planning experience with us.</p>
       <p class="intro-text">Please feel free to share your own experience with our services.</p>
+
+      <!-- Add Review Form -->
+      <div class="add-review-card">
+        <h2>Share Your Experience</h2>
+        <form @submit.prevent="handleAddReview">
+          <div class="form-group">
+            <label for="reviewName">Your Name (or Couple Name)</label>
+            <input
+              id="reviewName"
+              v-model="newReview.name"
+              type="text"
+              placeholder="e.g., Sarah & John"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="reviewRating">Rating</label>
+            <div class="rating-selector">
+              <button
+                v-for="star in 5"
+                :key="star"
+                type="button"
+                :class="['star-btn', { active: newReview.rating >= star }]"
+                @click="newReview.rating = star"
+              >
+                ⭐
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reviewText">Your Review</label>
+            <textarea
+              id="reviewText"
+              v-model="newReview.text"
+              placeholder="Share your experience with EverAfter..."
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Submit Review</button>
+          <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
+        </form>
+      </div>
+
       <div class="reviews-grid">
         <div v-for="review in reviews" :key="review.id" class="review-card">
           <div class="stars">{{ review.stars }}</div>
@@ -35,6 +82,12 @@ export default {
   name: 'ReviewsPage',
   data() {
     return {
+      newReview: {
+        name: '',
+        rating: 5,
+        text: ''
+      },
+      successMessage: '',
       reviews: [
         {
           id: 1,
@@ -80,6 +133,50 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    handleAddReview() {
+      if (!this.newReview.name || !this.newReview.text) {
+        // Use global alert function for validation
+        // eslint-disable-next-line no-undef
+        alert('Please fill in all fields');
+        return;
+      }
+
+      // Get current date
+      const today = new Date();
+      const month = today.toLocaleDateString('en-US', { month: 'long' });
+      const year = today.getFullYear();
+      const date = `${month} ${year}`;
+
+      // Create stars string based on rating
+      const starsString = '⭐'.repeat(this.newReview.rating);
+
+      // Add new review to the beginning of the array
+      const newReviewObj = {
+        id: Date.now(),
+        name: this.newReview.name,
+        stars: starsString,
+        date: date,
+        text: this.newReview.text
+      };
+
+      this.reviews.unshift(newReviewObj);
+
+      // Clear form
+      this.newReview = {
+        name: '',
+        rating: 5,
+        text: ''
+      };
+
+      // Show success message
+      this.successMessage = 'Thank you for your review!';
+      // eslint-disable-next-line no-undef
+      setTimeout(() => {
+        this.successMessage = '';
+      }, 3000);
+    }
   }
 };
 </script>
@@ -151,5 +248,104 @@ h1 {
   color: #666;
   line-height: 1.6;
   font-style: italic;
+}
+
+.add-review-card {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
+}
+
+.add-review-card h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.rating-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.star-btn {
+  background: none;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-btn:hover {
+  border-color: #667eea;
+  transform: scale(1.1);
+}
+
+.star-btn.active {
+  border-color: #ffc107;
+  background-color: #ffc10720;
+}
+
+.submit-btn {
+  padding: 12px 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+}
+
+.success-message {
+  color: #388e3c;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 600;
 }
 </style>

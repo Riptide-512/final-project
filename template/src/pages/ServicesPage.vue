@@ -16,11 +16,22 @@
       <p class="intro-text">We offer a comprehensive range of professional services tailored to meet your needs.</p>
       
       <div class="services-grid">
-        <div v-for="service in services" :key="service.id" class="service-card">
-          <div class="service-icon">{{ service.icon }}</div>
-          <h2>{{ service.title }}</h2>
-          <p>{{ service.description }}</p>
-        </div>
+        <template v-for="service in services" :key="service.id">
+          <router-link 
+            v-if="service.id === 1" 
+            to="/guest-list" 
+            class="service-card"
+          >
+            <div class="service-icon">{{ service.icon }}</div>
+            <h2>{{ service.title }}</h2>
+            <p>{{ service.description }}</p>
+          </router-link>
+          <div v-else class="service-card">
+            <div class="service-icon">{{ service.icon }}</div>
+            <h2>{{ service.title }}</h2>
+            <p>{{ service.description }}</p>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -107,6 +118,9 @@ h1 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .service-card:hover {

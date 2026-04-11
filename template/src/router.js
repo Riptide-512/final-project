@@ -22,6 +22,11 @@ const routes = [
     path: '/reviews',
     name:'reviews',
     component: () => import('@/pages/ReviewsPage.vue'),
+  },
+  {
+    path: '/guest-list',
+    name:'guestList',
+    component: () => import('@/pages/GuestListPage.vue'),
   }
 ]
 
