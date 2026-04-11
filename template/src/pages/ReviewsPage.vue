@@ -3,7 +3,7 @@
     <!-- Header Navigation -->
     <header class="bg-white shadow">
       <nav class="flex items-center justify-between px-8 py-4">
-        <h1 class="text-2xl font-bold text-slate-800">Wedding Planner</h1>
+        <h1 class="text-2xl font-bold text-slate-800">EverAfter</h1>
         <ul class="flex gap-8">
           <li><router-link to="/" class="text-slate-700 hover:text-slate-900">Home</router-link></li>
           <li><router-link to="/services" class="text-slate-700 hover:text-slate-900">Services</router-link></li>
@@ -17,7 +17,7 @@
     <div class="reviews-container">
       <h1>Our Reviews</h1>
       <p class="intro-text">See what our happy clients have to say about their wedding planning experience with us.</p>
-      
+      <p class="intro-text">Please feel free to share your own experience with our services.</p>
       <div class="reviews-grid">
         <div v-for="review in reviews" :key="review.id" class="review-card">
           <div class="stars">{{ review.stars }}</div>
