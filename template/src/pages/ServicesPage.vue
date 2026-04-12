@@ -26,6 +26,15 @@
             <h2>{{ service.title }}</h2>
             <p>{{ service.description }}</p>
           </router-link>
+          <router-link 
+            v-else-if="service.id === 4" 
+            to="/gift-registry" 
+            class="service-card"
+          >
+            <div class="service-icon">{{ service.icon }}</div>
+            <h2>{{ service.title }}</h2>
+            <p>{{ service.description }}</p>
+          </router-link>
           <div v-else class="service-card">
             <div class="service-icon">{{ service.icon }}</div>
             <h2>{{ service.title }}</h2>

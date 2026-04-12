@@ -27,6 +27,11 @@ const routes = [
     path: '/guest-list',
     name:'guestList',
     component: () => import('@/pages/GuestListPage.vue'),
+  },
+  {
+    path: '/gift-registry',
+    name:'giftRegistry',
+    component: () => import('@/pages/GiftRegistryPage.vue'),
   }
 ]
 
