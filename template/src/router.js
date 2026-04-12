@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 
-import HomePage from '@/pages/HomePage.vue'
+import HomePage from './pages/HomePage.vue'
 
 const routes = [
   {
@@ -11,27 +11,27 @@ const routes = [
   {
     path: '/about',
     name:'about',
-    component: () => import('@/pages/AboutPage.vue'),
+    component: () => import('./pages/AboutPage.vue'),
   },
   {
     path: '/services',
     name:'services',
-    component: () => import('@/pages/ServicesPage.vue'),
+    component: () => import('./pages/ServicesPage.vue'),
   },
   {
     path: '/reviews',
     name:'reviews',
-    component: () => import('@/pages/ReviewsPage.vue'),
+    component: () => import('./pages/ReviewsPage.vue'),
   },
   {
     path: '/guest-list',
     name:'guestList',
-    component: () => import('@/pages/GuestListPage.vue'),
+    component: () => import('./pages/GuestListPage.vue'),
   },
   {
     path: '/gift-registry',
     name:'giftRegistry',
-    component: () => import('@/pages/GiftRegistryPage.vue'),
+    component: () => import('./pages/GiftRegistryPage.vue'),
   }
 ]
 
