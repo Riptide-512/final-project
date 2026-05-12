@@ -1,80 +1,59 @@
 <template>
   <div class="services-page">
     <div class="services-container">
-      <h1>Our Services</h1>
-      <p class="intro-text">We offer a comprehensive range of professional services tailored to meet your needs.</p>
-      
-      <div class="services-grid">
-        <template v-for="service in services" :key="service.id">
-          <router-link 
-            v-if="service.id === 1" 
-            to="/guest-list" 
-            class="service-card"
-          >
-            <div class="service-icon">{{ service.icon }}</div>
-            <h2>{{ service.title }}</h2>
-            <p>{{ service.description }}</p>
-          </router-link>
-          <router-link 
-            v-else-if="service.id === 4" 
-            to="/gift-registry" 
-            class="service-card"
-          >
-            <div class="service-icon">{{ service.icon }}</div>
-            <h2>{{ service.title }}</h2>
-            <p>{{ service.description }}</p>
-          </router-link>
-          <div v-else class="service-card">
-            <div class="service-icon">{{ service.icon }}</div>
-            <h2>{{ service.title }}</h2>
-            <p>{{ service.description }}</p>
-          </div>
-        </template>
+      <header class="page-header">
+        <h1>Tools</h1>
+        <p class="intro-text">
+          Your central hub for EverAfter planning features. Open the guest list, gift registry, or planning dashboard below.
+        </p>
+      </header>
+
+      <div class="features-grid">
+        <router-link to="/guest-list" class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h2>Guest List</h2>
+          <p>Manage invitations, RSVPs, and guest details.</p>
+        </router-link>
+
+        <router-link to="/gift-registry" class="feature-card">
+          <div class="feature-icon">🎁</div>
+          <h2>Gift Registry</h2>
+          <p>Create and share your event gift registry with guests.</p>
+        </router-link>
+
+        <router-link to="/planning-dashboard" class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h2>Planning Dashboard</h2>
+          <p>Track tasks, progress, and milestones across your planning workflow.</p>
+        </router-link>
       </div>
+
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ServicesPage',
-  data() {
-    return {
-      services: [
-        {
-          id: 1,
-          icon: '👥',
-          title: 'Guest List Management',
-          description: 'Easily manage and organize your guest list with intuitive tools and features.'
-        },
-        {
-          id: 2,
-          icon: '✉️',
-          title: 'Digital Invitations',
-          description: 'Create and send beautiful digital invitations to your guests instantly.'
-        },
-        {
-          id: 3,
-          icon: '✅',
-          title: 'RSVP Collection',
-          description: 'Collect and track RSVPs efficiently to plan better for your event.'
-        },
-        {
-          id: 4,
-          icon: '🎁',
-          title: 'Gift Registry',
-          description: 'Create and manage gift registries to help guests choose the perfect presents.'
-        },
-        {
-          id: 5,
-          icon: '📋',
-          title: 'Planning Dashboard',
-          description: 'Comprehensive dashboard to manage all aspects of your event planning.'
-        }
-      ]
-    };
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useTitle } from '@vueuse/core'
+import { apiFetch } from '@/lib/api'
+
+useTitle('Tools · EverAfter')
+
+const services = ref([])
+const feedback = ref('')
+
+const loadServices = async () => {
+  try {
+    services.value = await apiFetch('/services', { auth: true })
+  } catch {
+    services.value = []
+    feedback.value = 'Unable to load services. Please try again later.'
   }
-};
+}
+
+onMounted(() => {
+  loadServices()
+})
 </script>
 
 

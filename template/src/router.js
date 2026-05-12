@@ -26,6 +26,13 @@ const routes = [
     path: '/services',
     name:'services',
     component: () => import('./pages/ServicesPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/planning-dashboard',
+    name:'planningDashboard',
+    component: () => import('./pages/PlanningDashboardPage.vue'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/reviews',
@@ -36,11 +43,13 @@ const routes = [
     path: '/guest-list',
     name:'guestList',
     component: () => import('./pages/GuestListPage.vue'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/gift-registry',
     name:'giftRegistry',
     component: () => import('./pages/GiftRegistryPage.vue'),
+    meta: { requiresAuth: true },
   }
 ]
 
@@ -50,15 +59,19 @@ routes,
 
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const auth = useAuthStore()
+
+  if (auth.isAuthenticated && !auth.accessToken) {
+    await auth.refresh()
+  }
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
   if (to.meta.guestOnly && auth.isAuthenticated) {
-    return { name: 'projects' }
+    return { name: 'services' }
   }
 })
 

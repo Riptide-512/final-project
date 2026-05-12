@@ -126,106 +126,111 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'GiftRegistryPage',
-  data() {
-    return {
-      newGift: {
-        name: '',
-        store: '',
-        link: '',
-        price: null,
-        priority: 'Medium'
-      },
-      successMessage: '',
-      gifts: []
-    };
-  },
-  computed: {
-    totalValue() {
-      return this.gifts.reduce((sum, gift) => sum + (gift.price || 0), 0);
-    },
-    purchasedCount() {
-      return this.gifts.filter(gift => gift.purchased).length;
-    }
-  },
-  mounted() {
-    this.loadGifts();
-  },
-  methods: {
-    handleAddGift() {
-      if (!this.newGift.name || !this.newGift.link) {
-         
-        alert('Please fill in all required fields');
-        return;
-      }
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useTitle } from '@vueuse/core'
+import { apiFetch } from '@/lib/api'
 
-      const newGiftObj = {
-        id: Date.now(),
-        name: this.newGift.name,
-        store: this.newGift.store,
-        link: this.newGift.link,
-        price: this.newGift.price,
-        priority: this.newGift.priority,
-        purchased: false,
-        addedDate: new Date().toISOString()
-      };
+useTitle('Gift Registry · EverAfter')
 
-      this.gifts.push(newGiftObj);
-      this.saveGifts();
+const gifts = ref([])
+const newGift = ref({
+  name: '',
+  store: '',
+  link: '',
+  price: null,
+  priority: 'Medium',
+})
+const successMessage = ref('')
+const errorMessage = ref('')
 
-      // Clear form
-      this.newGift = {
-        name: '',
-        store: '',
-        link: '',
-        price: null,
-        priority: 'Medium'
-      };
+const totalValue = computed(() =>
+  gifts.value.reduce((sum, gift) => sum + (gift.price || 0), 0),
+)
+const purchasedCount = computed(() =>
+  gifts.value.filter((gift) => gift.purchased).length,
+)
 
-      this.successMessage = 'Gift item added successfully!';
-       
-      setTimeout(() => {
-        this.successMessage = '';
-      }, 2000);
-    },
-
-    deleteGift(id) {
-      this.gifts = this.gifts.filter(gift => gift.id !== id);
-      this.saveGifts();
-    },
-
-    togglePurchased(id) {
-      const gift = this.gifts.find(g => g.id === id);
-      if (gift) {
-        gift.purchased = !gift.purchased;
-        this.saveGifts();
-      }
-    },
-
-    saveGifts() {
-       
-      localStorage.setItem('weddingGiftRegistry', JSON.stringify(this.gifts));
-    },
-
-    loadGifts() {
-       
-      const savedGifts = localStorage.getItem('weddingGiftRegistry');
-      if (savedGifts) {
-        this.gifts = JSON.parse(savedGifts);
-      }
-    },
-
-    formatDate(dateString) {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
+async function loadGifts() {
+  try {
+    gifts.value = await apiFetch('/gift-registry', { auth: true })
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to load gift registry.'
   }
-};
+}
+
+async function handleAddGift() {
+  if (!newGift.value.name || !newGift.value.link) {
+    errorMessage.value = 'Please fill in all required fields.'
+    return
+  }
+
+  try {
+    const created = await apiFetch('/gift-registry', {
+      auth: true,
+      method: 'POST',
+      body: {
+        name: newGift.value.name,
+        store: newGift.value.store,
+        link: newGift.value.link,
+        price: newGift.value.price,
+        priority: newGift.value.priority,
+        purchased: false,
+      },
+    })
+
+    gifts.value.push(created)
+    newGift.value = { name: '', store: '', link: '', price: null, priority: 'Medium' }
+    successMessage.value = 'Gift item added successfully!'
+    errorMessage.value = ''
+
+    setTimeout(() => {
+      successMessage.value = ''
+    }, 2000)
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to add gift.'
+  }
+}
+
+async function deleteGift(id) {
+  try {
+    await apiFetch(`/gift-registry/${id}`, {
+      auth: true,
+      method: 'DELETE',
+    })
+    gifts.value = gifts.value.filter((gift) => gift.id !== id)
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to delete gift.'
+  }
+}
+
+async function togglePurchased(id) {
+  const gift = gifts.value.find((g) => g.id === id)
+  if (!gift) return
+
+  try {
+    const updated = await apiFetch(`/gift-registry/${id}`, {
+      auth: true,
+      method: 'PATCH',
+      body: { purchased: !gift.purchased },
+    })
+    Object.assign(gift, updated)
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to update gift status.'
+  }
+}
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+onMounted(() => {
+  loadGifts()
+})
 </script>
 
 

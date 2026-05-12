@@ -101,100 +101,103 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'GuestListPage',
-  data() {
-    return {
-      newGuest: {
-        name: '',
-        count: 1,
-        notes: ''
-      },
-      successMessage: '',
-      guests: []
-    };
-  },
-  computed: {
-    totalGuests() {
-      return this.guests.reduce((sum, guest) => sum + guest.count, 0);
-    },
-    confirmedCount() {
-      return this.guests.filter(guest => guest.rsvpConfirmed).length;
-    }
-  },
-  mounted() {
-    this.loadGuests();
-  },
-  methods: {
-    handleAddGuest() {
-      if (!this.newGuest.name || !this.newGuest.count) {
-         
-        alert('Please fill in all required fields');
-        return;
-      }
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useTitle } from '@vueuse/core'
+import { apiFetch } from '@/lib/api'
 
-      const newGuestObj = {
-        id: Date.now(),
-        name: this.newGuest.name,
-        count: this.newGuest.count,
-        notes: this.newGuest.notes,
-        rsvpConfirmed: false,
-        addedDate: new Date().toISOString()
-      };
+useTitle('Guest List · EverAfter')
 
-      this.guests.push(newGuestObj);
-      this.saveGuests();
+const guests = ref([])
+const newGuest = ref({ name: '', count: 1, notes: '' })
+const successMessage = ref('')
+const errorMessage = ref('')
 
-      // Clear form
-      this.newGuest = {
-        name: '',
-        count: 1,
-        notes: ''
-      };
+const totalGuests = computed(() =>
+  guests.value.reduce((sum, guest) => sum + (guest.count || 0), 0),
+)
+const confirmedCount = computed(() =>
+  guests.value.filter((guest) => guest.rsvpConfirmed).length,
+)
 
-      this.successMessage = 'Guest added successfully!';
-       
-      setTimeout(() => {
-        this.successMessage = '';
-      }, 2000);
-    },
-
-    deleteGuest(id) {
-      this.guests = this.guests.filter(guest => guest.id !== id);
-      this.saveGuests();
-    },
-
-    toggleRSVP(id) {
-      const guest = this.guests.find(g => g.id === id);
-      if (guest) {
-        guest.rsvpConfirmed = !guest.rsvpConfirmed;
-        this.saveGuests();
-      }
-    },
-
-    saveGuests() {
-       
-      localStorage.setItem('weddingGuests', JSON.stringify(this.guests));
-    },
-
-    loadGuests() {
-       
-      const savedGuests = localStorage.getItem('weddingGuests');
-      if (savedGuests) {
-        this.guests = JSON.parse(savedGuests);
-      }
-    },
-
-    formatDate(dateString) {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
+async function loadGuests() {
+  try {
+    guests.value = await apiFetch('/guest-list', { auth: true })
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to load guest list.'
   }
-};
+}
+
+async function handleAddGuest() {
+  if (!newGuest.value.name || !newGuest.value.count) {
+    errorMessage.value = 'Please fill in all required fields.'
+    return
+  }
+
+  try {
+    const created = await apiFetch('/guest-list', {
+      auth: true,
+      method: 'POST',
+      body: {
+        name: newGuest.value.name,
+        count: newGuest.value.count,
+        notes: newGuest.value.notes,
+        rsvpConfirmed: false,
+      },
+    })
+
+    guests.value.push(created)
+    newGuest.value = { name: '', count: 1, notes: '' }
+    successMessage.value = 'Guest added successfully!'
+    errorMessage.value = ''
+
+    setTimeout(() => {
+      successMessage.value = ''
+    }, 2000)
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to add guest.'
+  }
+}
+
+async function deleteGuest(id) {
+  try {
+    await apiFetch(`/guest-list/${id}`, {
+      auth: true,
+      method: 'DELETE',
+    })
+    guests.value = guests.value.filter((guest) => guest.id !== id)
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to delete guest.'
+  }
+}
+
+async function toggleRSVP(id) {
+  const guest = guests.value.find((g) => g.id === id)
+  if (!guest) return
+
+  try {
+    const updated = await apiFetch(`/guest-list/${id}`, {
+      auth: true,
+      method: 'PATCH',
+      body: { rsvpConfirmed: !guest.rsvpConfirmed },
+    })
+    Object.assign(guest, updated)
+  } catch (error) {
+    errorMessage.value = error?.message || 'Unable to update guest status.'
+  }
+}
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+onMounted(() => {
+  loadGuests()
+})
 </script>
 
 

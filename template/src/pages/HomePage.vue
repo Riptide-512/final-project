@@ -9,8 +9,8 @@
       <div class="features-grid">
         <router-link to="/services" class="feature-card">
           <div class="feature-icon">✨</div>
-          <h2>Services</h2>
-          <p>Explore our comprehensive range of professional wedding planning services tailored to meet your needs. From guest list management to digital invitations and more.</p>
+          <h2>Tools</h2>
+          <p>Open EverAfter’s primary planning tools: Guest List, Gift Registry, and Planning Dashboard.</p>
         </router-link>
         <router-link to="/about" class="feature-card">
           <div class="feature-icon">👥</div>
