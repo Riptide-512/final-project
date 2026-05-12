@@ -19,11 +19,14 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => Boolean(refreshToken.value))
 
-  function setTokens({ accessToken: at, refreshToken: rt }) {
-    if (at !== undefined) accessToken.value = at
-    if (rt !== undefined) refreshToken.value = rt
-    if (at) {
-      const emailFromToken = decodeJwtEmail(at)
+  function setTokens({ accessToken: at, refreshToken: rt, access_token, refresh_token }) {
+    const resolvedAccessToken = at ?? access_token
+    const resolvedRefreshToken = rt ?? refresh_token
+
+    if (resolvedAccessToken !== undefined) accessToken.value = resolvedAccessToken
+    if (resolvedRefreshToken !== undefined) refreshToken.value = resolvedRefreshToken
+    if (resolvedAccessToken) {
+      const emailFromToken = decodeJwtEmail(resolvedAccessToken)
       if (emailFromToken) email.value = emailFromToken
     }
   }
@@ -47,10 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
       method: 'POST',
       body: { email: userEmail, password },
     })
-    setTokens({
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-    })
+    setTokens(data)
     email.value = userEmail
   }
 
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
         method: 'POST',
         body: { refresh_token: refreshToken.value },
       })
-      accessToken.value = data.access_token
+      accessToken.value = data.accessToken ?? data.access_token
       return true
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) clear()

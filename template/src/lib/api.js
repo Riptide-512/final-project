@@ -39,12 +39,14 @@ async function rawFetch(path, { method = 'GET', body, token } = {}) {
   }
 
   if (!response.ok) {
-    const error = payload?.error ?? {}
+    const errorBody = payload?.error ?? payload ?? {}
+    const message = errorBody.message ?? payload?.message ?? response.statusText
+    const details = errorBody.details ?? payload?.details ?? []
     throw new ApiError({
       status: response.status,
-      code: error.code ?? 'UNKNOWN_ERROR',
-      message: error.message ?? response.statusText,
-      details: error.details ?? [],
+      code: errorBody.code ?? 'UNKNOWN_ERROR',
+      message,
+      details,
     })
   }
 
