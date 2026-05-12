@@ -53,7 +53,7 @@ async function signOut() {
 
           <div
             v-show="isToolsOpen"
-            class="absolute left-0 z-20 mt-2 min-w-[14rem] overflow-hidden rounded-xl border border-slate-200 bg-white text-left shadow-lg"
+            class="absolute left-0 z-20 mt-2 min-w-56 overflow-hidden rounded-xl border border-slate-200 bg-white text-left shadow-lg"
             role="menu"
           >
             <RouterLink
