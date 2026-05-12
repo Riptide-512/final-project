@@ -156,7 +156,7 @@ export default {
   methods: {
     handleAddGift() {
       if (!this.newGift.name || !this.newGift.link) {
-        // eslint-disable-next-line no-undef
+         
         alert('Please fill in all required fields');
         return;
       }
@@ -185,7 +185,7 @@ export default {
       };
 
       this.successMessage = 'Gift item added successfully!';
-      // eslint-disable-next-line no-undef
+       
       setTimeout(() => {
         this.successMessage = '';
       }, 2000);
@@ -205,12 +205,12 @@ export default {
     },
 
     saveGifts() {
-      // eslint-disable-next-line no-undef
+       
       localStorage.setItem('weddingGiftRegistry', JSON.stringify(this.gifts));
     },
 
     loadGifts() {
-      // eslint-disable-next-line no-undef
+       
       const savedGifts = localStorage.getItem('weddingGiftRegistry');
       if (savedGifts) {
         this.gifts = JSON.parse(savedGifts);

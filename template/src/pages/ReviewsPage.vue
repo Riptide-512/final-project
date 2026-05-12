@@ -125,7 +125,7 @@ export default {
     handleAddReview() {
       if (!this.newReview.name || !this.newReview.text) {
         // Use global alert function for validation
-        // eslint-disable-next-line no-undef
+         
         alert('Please fill in all fields');
         return;
       }
@@ -159,7 +159,7 @@ export default {
 
       // Show success message
       this.successMessage = 'Thank you for your review!';
-      // eslint-disable-next-line no-undef
+       
       setTimeout(() => {
         this.successMessage = '';
       }, 3000);

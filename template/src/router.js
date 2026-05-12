@@ -1,13 +1,21 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-import HomePage from './pages/HomePage.vue'
-
 const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('./pages/LoginPage.vue'),
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('./pages/RegisterPage.vue'),
+  },
   {
     path: '/',
     name:'home',
-    component: HomePage,
+    component: () => import('./pages/HomePage.vue'),
   },
   {
     path: '/about',
@@ -23,16 +31,6 @@ const routes = [
     path: '/reviews',
     name:'reviews',
     component: () => import('./pages/ReviewsPage.vue'),
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('./pages/LoginPage.vue'),
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('./pages/RegisterPage.vue'),
   },
   {
     path: '/guest-list',

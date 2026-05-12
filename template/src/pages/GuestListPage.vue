@@ -129,7 +129,7 @@ export default {
   methods: {
     handleAddGuest() {
       if (!this.newGuest.name || !this.newGuest.count) {
-        // eslint-disable-next-line no-undef
+         
         alert('Please fill in all required fields');
         return;
       }
@@ -154,7 +154,7 @@ export default {
       };
 
       this.successMessage = 'Guest added successfully!';
-      // eslint-disable-next-line no-undef
+       
       setTimeout(() => {
         this.successMessage = '';
       }, 2000);
@@ -174,12 +174,12 @@ export default {
     },
 
     saveGuests() {
-      // eslint-disable-next-line no-undef
+       
       localStorage.setItem('weddingGuests', JSON.stringify(this.guests));
     },
 
     loadGuests() {
-      // eslint-disable-next-line no-undef
+       
       const savedGuests = localStorage.getItem('weddingGuests');
       if (savedGuests) {
         this.guests = JSON.parse(savedGuests);

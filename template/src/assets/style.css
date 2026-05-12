@@ -506,4 +506,24 @@ input:focus,
   }
 }
 
+/* Custom button styles for pastel pink theme */
+button[class*="bg-accent"] {
+  background-color: #e91e63 !important;
+  color: white !important;
+  border-color: #e91e63 !important;
+}
+
+button[class*="bg-accent"]:hover {
+  background-color: #c2185b !important;
+  border-color: #c2185b !important;
+}
+
+button[class*="text-accent"] {
+  color: #e91e63 !important;
+}
+
+button[class*="text-accent"]:hover {
+  color: #c2185b !important;
+}
+
 

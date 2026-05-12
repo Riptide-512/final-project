@@ -19,7 +19,7 @@ const form = reactive({ email: '', password: '' })
 async function onSubmit() {
   try {
     await run(() => auth.login(form))
-    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/projects'
+    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
     router.replace(redirect)
   } catch {
     // error captured
@@ -28,7 +28,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <main class="flex flex-1 items-center justify-center px-5 py-16">
+  <main class="flex flex-1 items-center justify-center px-5 py-16" style="background-color: #fce4ec;">
     <div class="rise w-full max-w-sm">
       <div class="mb-8 text-center">
         <span class="chip chip-accent mb-4">Welcome back</span>

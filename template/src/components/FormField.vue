@@ -31,11 +31,11 @@ const inputValue = computed({
       class="form-field__input"
       :type="type"
       :value="inputValue"
-      @input="inputValue = $event.target.value"
       :placeholder="placeholder"
       :autocomplete="autocomplete"
       :required="required"
       :aria-invalid="Boolean(error)"
+      @input="inputValue = $event.target.value"
     />
     <p v-if="hint && !error" class="form-field__hint">{{ hint }}</p>
     <p v-if="error" class="form-field__error">{{ error }}</p>

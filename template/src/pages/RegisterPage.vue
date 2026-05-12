@@ -7,7 +7,7 @@ import FormField from '@/components/FormField.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useAsync } from '@/composables/useAsync'
 
-useTitle('Create account · Projects')
+useTitle('Create account · EverAfter')
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -18,7 +18,7 @@ const form = reactive({ email: '', password: '' })
 async function onSubmit() {
   try {
     await run(() => auth.register(form))
-    router.replace('/projects')
+    router.replace('/')
   } catch {
     // shown via error state
   }
@@ -26,7 +26,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <main class="flex flex-1 items-center justify-center px-5 py-16">
+  <main class="flex flex-1 items-center justify-center px-5 py-16" style="background-color: #fce4ec;">
     <div class="rise w-full max-w-sm">
       <div class="mb-8 text-center">
         <span class="chip chip-accent">New account</span>
