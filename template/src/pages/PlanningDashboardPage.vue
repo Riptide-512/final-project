@@ -4,7 +4,7 @@
       <header class="page-header dashboard-header">
         <h1>Planning Dashboard</h1>
         <p class="intro-text">
-          Track planning tasks across your services and manage them with one backend-backed dashboard.
+          Track and organize your tasks, set different priorities for them to complete them efficiently.
         </p>
       </header>
 
